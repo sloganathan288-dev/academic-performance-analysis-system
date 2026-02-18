@@ -1,0 +1,60 @@
+{
+  "ai&ds_2023-2027_Internal 1_java_2026-02-28": {
+    "department": "ai&ds",
+    "year": "2023-2027",
+    "internal": "Internal 1",
+    "subject": "java",
+    "date": "2026-02-28",
+    "month": "February 2026",
+    "students": [
+      {
+        "roll": "1",
+        "name": "logan",
+        "marks": "99",
+        "category": "high"
+      },
+      {
+        "roll": "2",
+        "name": "dhanush",
+        "marks": "100",
+        "category": "high"
+      },
+      {
+        "roll": "3",
+        "name": "ninja",
+        "marks": "5",
+        "category": "low"
+      }
+    ],
+    "analysis": {
+      "total": 3,
+      "present": 3,
+      "absent": 0,
+      "highest": 100,
+      "lowest": 5,
+      "average": 68.0
+    },
+    "ranked": [
+      {
+        "roll": "2",
+        "name": "dhanush",
+        "marks": "100",
+        "category": "high"
+      },
+      {
+        "roll": "1",
+        "name": "logan",
+        "marks": "99",
+        "category": "high"
+      },
+      {
+        "roll": "3",
+        "name": "ninja",
+        "marks": "5",
+        "category": "low"
+      }
+    ],
+    "teacher": "logan",
+    "timestamp": "2026-02-18T23:30:38.622652"
+  }
+}

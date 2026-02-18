@@ -1,0 +1,91 @@
+{
+  "test_case_1_registration_output": {
+    "success": true,
+    "message": "Registration successful"
+  },
+  "test_case_2_login_output": {
+    "success": true,
+    "name": "John Doe"
+  },
+  "test_case_3_invalid_login_output": {
+    "success": false,
+    "message": "Invalid credentials"
+  },
+  "test_case_4_exam_all_present_output": {
+    "success": true,
+    "analysis": {
+      "total": 5,
+      "present": 5,
+      "absent": 0,
+      "highest": 95,
+      "lowest": 62,
+      "average": 82.0
+    },
+    "ranked": [
+      {"roll": "1", "name": "Alice", "marks": "95", "category": "high"},
+      {"roll": "5", "name": "Eve", "marks": "90", "category": "high"},
+      {"roll": "3", "name": "Charlie", "marks": "85", "category": "average"},
+      {"roll": "2", "name": "Bob", "marks": "78", "category": "average"},
+      {"roll": "4", "name": "David", "marks": "62", "category": "low"}
+    ]
+  },
+  "test_case_5_exam_with_absent_output": {
+    "success": true,
+    "analysis": {
+      "total": 4,
+      "present": 2,
+      "absent": 2,
+      "highest": 88,
+      "lowest": 75,
+      "average": 81.5
+    },
+    "ranked": [
+      {"roll": "1", "name": "Alice", "marks": "88", "category": "high"},
+      {"roll": "3", "name": "Charlie", "marks": "75", "category": "low"}
+    ]
+  },
+  "test_case_8_duplicate_username_output": {
+    "success": false,
+    "message": "Username exists"
+  },
+  "test_case_9_empty_fields_output": {
+    "success": false,
+    "message": "All fields required"
+  },
+  "test_case_12_single_student_output": {
+    "success": true,
+    "analysis": {
+      "total": 1,
+      "present": 1,
+      "absent": 0,
+      "highest": 85,
+      "lowest": 85,
+      "average": 85.0
+    },
+    "ranked": [
+      {"roll": "1", "name": "Alice", "marks": "85", "category": "average"}
+    ]
+  },
+  "test_case_13_all_absent_output": {
+    "success": true,
+    "analysis": {
+      "total": 3,
+      "present": 0,
+      "absent": 3,
+      "highest": 0,
+      "lowest": 0,
+      "average": 0
+    },
+    "ranked": []
+  },
+  "performance_categorization_rules": {
+    "high_performer": "marks >= (average + 10)",
+    "average_performer": "(average - 10) < marks < (average + 10)",
+    "needs_attention": "marks <= (average - 10)"
+  },
+  "color_coding": {
+    "high": "green (#d4edda)",
+    "average": "yellow (#fff3cd)",
+    "low": "red (#f8d7da)"
+  }
+}

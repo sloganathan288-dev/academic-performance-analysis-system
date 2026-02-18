@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test</title></head>
+<body>
+<button onclick="test()">Test Connection</button>
+<div id="result"></div>
+<script>
+async function test() {
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name: 'Test', username: 'test', password: 'test'})
+        });
+        const data = await response.json();
+        document.getElementById('result').innerHTML = JSON.stringify(data);
+    } catch(e) {
+        document.getElementById('result').innerHTML = 'Error: ' + e.message;
+    }
+}
+</script>
+</body>
+</html>

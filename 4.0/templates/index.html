@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Academic Assessment System</title>
+    <style>
+        body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        h1 { text-align: center; color: #333; }
+        .section { display: none; }
+        .section.active { display: block; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Academic Assessment System</h1>
+        
+        <div id="login" class="section active">
+            <h2>Login</h2>
+            <label>Username</label>
+            <input type="text" id="loginUser">
+            <label>Password</label>
+            <input type="password" id="loginPass">
+            <button class="btn-primary" onclick="login()">Login</button>
+            <button class="btn-secondary" onclick="showReg()">Register New Account</button>
+        </div>
+        
+        <div id="register" class="section">
+            <h2>Register</h2>
+            <label>Full Name</label>
+            <input type="text" id="regName">
+            <label>Username</label>
+            <input type="text" id="regUser">
+            <label>Password</label>
+            <input type="password" id="regPass">
+            <button class="btn-primary" onclick="register()">Register</button>
+            <button class="btn-secondary" onclick="showLogin()">Back to Login</button>
+        </div>
+        
+        <div id="dashboard" class="section">
+            <h2>Welcome <span id="userName"></span></h2>
+            <button class="btn-primary" onclick="showExam()">Enter Exam Data</button>
+            <button class="btn-secondary" onclick="showLogin()">Logout</button>
+        </div>
+        
+        <div id="exam" class="section">
+            <h2>Enter Exam Details</h2>
+            <label>Department</label>
+            <input type="text" id="dept">
+            <label>Academic Year</label>
+            <input type="text" id="year" placeholder="2023-2024">
+            <label>Internal Assessment</label>
+            <select id="internal" style="width:100%;padding:10px;margin:10px 0;">
+                <option>Internal 1</option>
+                <option>Internal 2</option>
+                <option>Internal 3</option>
+            </select>
+            <label>Subject</label>
+            <input type="text" id="subject">
+            <label>Exam Date</label>
+            <input type="date" id="date">
+            <label>Number of Students</label>
+            <input type="number" id="numStudents" min="1">
+            <button class="btn-primary" onclick="generateFields()">Generate Student Fields</button>
+            <div id="studentFields"></div>
+            <button class="btn-secondary" onclick="showDash()">Back</button>
+        </div>
+        
+        <div id="results" class="section">
+            <h2>Analysis Dashboard</h2>
+            <div id="stats"></div>
+            <div id="ranked"></div>
+            <button class="btn-secondary" onclick="showDash()">Back to Dashboard</button>
+        </div>
+    </div>
+    
+    <script>
+        function showLogin() {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('login').classList.add('active');
+        }
+        
+        function showReg() {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('register').classList.add('active');
+        }
+        
+        function showDash() {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('dashboard').classList.add('active');
+        }
+        
+        function showExam() {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('exam').classList.add('active');
+        }
+        
+        function generateFields() {
+            const num = document.getElementById('numStudents').value;
+            let html = '<h3>Enter Student Marks</h3>';
+            for(let i=1; i<=num; i++) {
+                html += `<div style="margin:10px 0;">
+                    <label>Student ${i} - Roll No</label>
+                    <input type="text" id="roll${i}" value="${i}">
+                    <label>Name</label>
+                    <input type="text" id="name${i}">
+                    <label>Marks (leave blank if absent)</label>
+                    <input type="number" id="marks${i}" min="0" max="100">
+                </div>`;
+            }
+            html += '<button class="btn-primary" onclick="submitExam()">Submit & Analyze</button>';
+            document.getElementById('studentFields').innerHTML = html;
+        }
+        
+        async function submitExam() {
+            const num = document.getElementById('numStudents').value;
+            const students = [];
+            for(let i=1; i<=num; i++) {
+                students.push({
+                    roll: document.getElementById(`roll${i}`).value,
+                    name: document.getElementById(`name${i}`).value,
+                    marks: document.getElementById(`marks${i}`).value || ''
+                });
+            }
+            
+            const res = await fetch('/save_exam', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    department: document.getElementById('dept').value,
+                    year: document.getElementById('year').value,
+                    internal: document.getElementById('internal').value,
+                    subject: document.getElementById('subject').value,
+                    date: document.getElementById('date').value,
+                    students: students
+                })
+            });
+            
+            const data = await res.json();
+            if(data.success) {
+                displayResults(data.analysis, data.ranked);
+            }
+        }
+        
+        function displayResults(analysis, ranked) {
+            let html = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0;">
+                <div style="background:#e3f2fd;padding:15px;border-radius:5px;text-align:center;">
+                    <h3>${analysis.total}</h3><p>Total Students</p>
+                </div>
+                <div style="background:#e8f5e9;padding:15px;border-radius:5px;text-align:center;">
+                    <h3>${analysis.present}</h3><p>Present</p>
+                </div>
+                <div style="background:#fff3e0;padding:15px;border-radius:5px;text-align:center;">
+                    <h3>${analysis.absent}</h3><p>Absent</p>
+                </div>
+                <div style="background:#c8e6c9;padding:15px;border-radius:5px;text-align:center;">
+                    <h3>${analysis.highest}</h3><p>Highest</p>
+                </div>
+                <div style="background:#ffcdd2;padding:15px;border-radius:5px;text-align:center;">
+                    <h3>${analysis.lowest}</h3><p>Lowest</p>
+                </div>
+                <div style="background:#b3e5fc;padding:15px;border-radius:5px;text-align:center;">
+                    <h3>${analysis.average}</h3><p>Average</p>
+                </div>
+            </div>`;
+            document.getElementById('stats').innerHTML = html;
+            
+            let table = '<h3>Ranked Performance</h3><table style="width:100%;border-collapse:collapse;">';
+            table += '<tr style="background:#333;color:white;"><th style="padding:10px;">Rank</th><th>Roll</th><th>Name</th><th>Marks</th><th>Category</th></tr>';
+            ranked.forEach((s, i) => {
+                let bg = s.category === 'high' ? '#d4edda' : s.category === 'low' ? '#f8d7da' : '#fff3cd';
+                table += `<tr style="background:${bg};"><td style="padding:10px;">${i+1}</td><td>${s.roll}</td><td>${s.name}</td><td>${s.marks}</td><td>${s.category}</td></tr>`;
+            });
+            table += '</table>';
+            document.getElementById('ranked').innerHTML = table;
+            
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('results').classList.add('active');
+        }
+        
+        async function register() {
+            const name = document.getElementById('regName').value;
+            const username = document.getElementById('regUser').value;
+            const password = document.getElementById('regPass').value;
+            
+            const res = await fetch('/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, username, password})
+            });
+            
+            const data = await res.json();
+            alert(data.message);
+            if(data.success) showLogin();
+        }
+        
+        async function login() {
+            const username = document.getElementById('loginUser').value;
+            const password = document.getElementById('loginPass').value;
+            
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            });
+            
+            const data = await res.json();
+            if(data.success) {
+                document.getElementById('userName').textContent = data.name;
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById('dashboard').classList.add('active');
+            } else {
+                alert(data.message);
+            }
+        }
+    </script>
+</body>
+</html>
